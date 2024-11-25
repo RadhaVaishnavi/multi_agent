@@ -2,8 +2,8 @@
 # Load model directly
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-tokenizer = AutoTokenizer.from_pretrained("nvidia/Llama-3.1-Nemotron-70B-Instruct-HF")
-model = AutoModelForCausalLM.from_pretrained("nvidia/Llama-3.1-Nemotron-70B-Instruct-HF")
+tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-1.3B")
+model = AutoModelForCausalLM.from_pretrained("EleutherAI/gpt-neo-1.3B")
 
 def generate_use_cases(industry_name, insights):
     """
