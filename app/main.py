@@ -1,6 +1,7 @@
-from research_agent import get_company_industry
-from use_case_agent import generate_use_cases
-from resource_agent import search_datasets, format_output
+from agents.research_agent import get_company_industry
+from agents.use_case_agent import generate_use_cases
+from agents.resource_agent import search_datasets, format_output
+
 
 def fetch_industry_and_use_cases(company_name):
     """
