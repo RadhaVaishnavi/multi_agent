@@ -1,22 +1,38 @@
 import requests
 from bs4 import BeautifulSoup
 
-def fetch_company_info(company_name):
+def get_company_industry(company_name):
     """
-    Scrape the web to determine the industry and focus areas of the given company.
+    Scrapes Wikipedia to fetch the industry/sector of a company based on its name.
     """
-    search_url = f"https://www.google.com/search?q={company_name}+industry"
-    headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(search_url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
+    # Replace spaces in the company name with underscores for Wikipedia URL format
+    company_name_wiki = company_name.replace(" ", "_")
+    
+    # Wikipedia URL for the company
+    url = f"https://en.wikipedia.org/wiki/{company_name_wiki}"
+    
+    # Send a GET request to the Wikipedia page
+    response = requests.get(url)
+    
+    if response.status_code != 200:
+        return "Industry information not found on Wikipedia."
+    
+    # Parse the HTML content using BeautifulSoup
+    soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Find the most relevant snippet for industry (improve logic as needed)
-    snippets = soup.find_all("span")
-    industry = "Not Found"
-    for snippet in snippets:
-        text = snippet.get_text().lower()
-        if "industry" in text or "sector" in text:
-            industry = text
-            break
+    # Search for the infobox table that contains company details
+    infobox = soup.find('table', {'class': 'infobox'})
 
-    return industry
+    if infobox:
+        # Try to find the "Industry" field in the infobox
+        rows = infobox.find_all('tr')
+        for row in rows:
+            th = row.find('th')
+            td = row.find('td')
+
+            if th and td:
+                if 'Industry' in th.text:
+                    # Extract the industry/sector value
+                    industry = td.text.strip()
+                    return industry
+    return "Industry information not found."
