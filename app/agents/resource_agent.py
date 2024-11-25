@@ -1,58 +1,38 @@
-import requests
-from bs4 import BeautifulSoup
-
-def search_datasets(use_case):
+def search_datasets(use_case_title):
     """
-    Search for relevant datasets related to the given use case on platforms like Kaggle, Hugging Face, and GitHub.
+    Search for relevant datasets based on the use case title.
+    For simplicity, this is a static mapping, but it could be expanded with actual search logic.
     """
-    datasets = []
-
-    # Search on Kaggle
-    kaggle_search_url = f"https://www.kaggle.com/search?q={use_case.replace(' ', '+')}"
-    response = requests.get(kaggle_search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    kaggle_links = soup.find_all('a', {'class': 'sc-ifAKCX jIjCOJ'})  # Update with actual class for Kaggle links
-    for link in kaggle_links:
-        datasets.append(f"- [Kaggle]({link.get('href')})")
-
-    # Search on Hugging Face
-    huggingface_search_url = f"https://huggingface.co/datasets?search={use_case.replace(' ', '+')}"
-    response = requests.get(huggingface_search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    huggingface_links = soup.find_all('a', {'class': 'link link-primary'})  # Update with actual class for Hugging Face links
-    for link in huggingface_links:
-        datasets.append(f"- [Hugging Face]({link.get('href')})")
-
-    # Search on GitHub
-    github_search_url = f"https://github.com/search?q={use_case.replace(' ', '+')}+dataset"
-    response = requests.get(github_search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    github_links = soup.find_all('a', {'class': 'v-align-middle'})  # Update with actual class for GitHub links
-    for link in github_links:
-        datasets.append(f"- [GitHub]({link.get('href')})")
-
-    return datasets
+    datasets = {
+        "Autonomous Vehicle Insights": [
+            {"platform": "Kaggle", "dataset": "Autonomous Driving Data", "url": "https://www.kaggle.com/datasets"},
+            {"platform": "GitHub", "dataset": "Self-Driving Car Models", "url": "https://github.com"}
+        ],
+        "Predictive Energy Management": [
+            {"platform": "Kaggle", "dataset": "Renewable Energy Generation", "url": "https://www.kaggle.com/datasets"},
+            {"platform": "GitHub", "dataset": "Solar Panel Data", "url": "https://github.com"}
+        ]
+    }
+    
+    return datasets.get(use_case_title, [])
 
 def format_output(company_name, industry, use_cases, datasets):
     """
-    Format the output with company info, use cases, and clickable dataset links.
+    Format the output with company, industry, use cases, and dataset links in a structured format.
     """
-    # Create formatted output
-    formatted_output = f"Company Name: {company_name}\n"
-    formatted_output += f"Industry Overview: {industry}\n\n"
+    output = f"Company Name: {company_name}\n"
+    output += f"Industry Overview: {industry}\n\n"
     
-    # Add Use Cases
     for idx, use_case in enumerate(use_cases, 1):
-        formatted_output += f"Use Case {idx}: {use_case['title']}\n"
-        formatted_output += f"AI Application: {use_case['application']}\n"
-        formatted_output += "Cross-Functional Benefits:\n"
+        output += f"Use Case {idx}: {use_case['title']}\n"
+        output += f"AI Application: {use_case['application']}\n"
+        output += "Cross-Functional Benefits:\n"
         for benefit in use_case['benefits']:
-            formatted_output += f"- {benefit['team']}: {benefit['description']}\n"
-        formatted_output += "\n"
-
-    # Add Dataset Links
-    formatted_output += "Dataset Links:\n"
-    for dataset in datasets:
-        formatted_output += f"{dataset}\n"
+            output += f"- {benefit['team']}: {benefit['description']}\n"
+        output += "\n"
     
-    return formatted_output
+    output += "Dataset Links:\n"
+    for dataset in datasets:
+        output += f"- {dataset['platform']} - {dataset['dataset']}: {dataset['url']}\n"
+    
+    return output
