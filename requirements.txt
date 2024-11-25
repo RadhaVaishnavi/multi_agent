@@ -3,3 +3,14 @@ transformers
 beautifulsoup4
 requests
 torch
+
+selenium
+numpy
+pandas
+scikit-learn
+sentence-transformers
+huggingface_hub
+nltk
+spacy
+pytest
+flask
