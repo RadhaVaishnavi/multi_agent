@@ -1,33 +1,22 @@
-# agents/research_agent.py
-
 import requests
 from bs4 import BeautifulSoup
 
-def fetch_industry_and_offerings(company_name):
+def fetch_company_info(company_name):
     """
-    Fetch industry and strategic focus areas of a company via web scraping.
+    Scrape the web to determine the industry and focus areas of the given company.
     """
-    search_query = f"{company_name} industry and key offerings"
-    url = f"https://www.google.com/search?q={search_query}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-    }
-    
-    response = requests.get(url, headers=headers)
-    if response.status_code != 200:
-        return None, None  # Handle failed requests
-    
+    search_url = f"https://www.google.com/search?q={company_name}+industry"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(search_url, headers=headers)
     soup = BeautifulSoup(response.text, "html.parser")
-    snippets = soup.find_all("span", class_="BNeawe")
-    
-    industry, offerings = None, None
+
+    # Find the most relevant snippet for industry (improve logic as needed)
+    snippets = soup.find_all("span")
+    industry = "Not Found"
     for snippet in snippets:
-        text = snippet.get_text()
-        if "industry" in text.lower():
+        text = snippet.get_text().lower()
+        if "industry" in text or "sector" in text:
             industry = text
-        if "key offerings" in text.lower() or "focus areas" in text.lower():
-            offerings = text
-        if industry and offerings:
             break
-    
-    return industry, offerings
+
+    return industry
