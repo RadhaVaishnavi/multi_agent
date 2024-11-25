@@ -5,32 +5,25 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-1.3B")
 model = AutoModelForCausalLM.from_pretrained("EleutherAI/gpt-neo-1.3B")
 
-def generate_use_cases(industry_name, insights):
+def generate_use_cases(industry_name, focus_areas):
     """
-    Generate AI/GenAI use cases using a language model.
+    Generate AI/GenAI use cases for a given industry and focus areas.
     """
     prompt = (
-        f"Generate structured AI/GenAI use cases for the {industry_name} industry based on the following insights:\n"
-        f"{insights}\n\n"
-        "Each use case should follow this format:\n"
+        f"Generate AI/GenAI use cases for the {industry_name} industry.\n"
+        f"Focus Areas: {focus_areas}\n\n"
         "Use Case: [Title]\n"
         "AI Application: [Detailed description]\n"
-        "Cross-Functional Benefit: [List benefits across teams/functions]\n\n"
-        "Ensure proper formatting and relevance."
+        "Cross-Functional Benefit: [List benefits across teams/functions]"
     )
-
+    
+    # Tokenize the input prompt
     inputs = tokenizer(prompt, return_tensors="pt")
     outputs = model.generate(
         inputs["input_ids"],
         max_length=500,
         num_return_sequences=1,
-        no_repeat_ngram_size=2,
-        do_sample=True,
-        top_k=50,
-        top_p=0.9,
         temperature=0.7
     )
-
-    raw_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    formatted_text = raw_text.replace("\n", " ").strip()
-    return formatted_text
+    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return response
