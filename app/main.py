@@ -1,31 +1,42 @@
-import streamlit as st
-from agents.research_agent import fetch_company_info
-from agents.use_case_agent import generate_use_cases
-from agents.resource_agent import collect_resources
+from research_agent import get_company_industry
+from use_case_agent import generate_use_cases
+from resource_agent import search_datasets, format_output
 
-st.title("AI/GenAI Market Research & Use Case Generator")
+def fetch_industry_and_use_cases(company_name):
+    """
+    Fetch the industry and generate use cases for the given company name.
+    """
+    # Scrape the industry for the company
+    industry = get_company_industry(company_name)
 
-# Input: Company name
-company_name = st.text_input("Enter the company name:")
+    # Generate use cases based on the industry
+    use_cases = generate_use_cases(industry)
 
-if st.button("Generate"):
-    if company_name:
-        # Fetch company info and industry
-        industry = fetch_company_info(company_name)
-        focus_areas = "Customer Experience, Operations, Supply Chain"  # Example placeholder
+    return industry, use_cases
 
-        st.write(f"**Company Name:** {company_name}")
-        st.write(f"**Industry:** {industry}")
+def generate_use_case(company_name):
+    """
+    Generate use cases and dataset links for the company based on the company name.
+    """
+    # Fetch industry and use cases
+    industry, use_cases = fetch_industry_and_use_cases(company_name)
 
-        # Generate use cases
-        use_cases = generate_use_cases(industry, focus_areas)
-        st.write("### AI/GenAI Use Cases")
-        st.write(use_cases)
+    # Search for relevant datasets based on use cases
+    datasets = []
+    for use_case in use_cases:
+        datasets.extend(search_datasets(use_case["title"]))
 
-        # Collect resource links
-        resources = collect_resources(f"{industry} AI datasets")
-        st.write("### Relevant Datasets")
-        for platform, link in resources.items():
-            st.markdown(f"- [{platform}]({link})")
-    else:
-        st.error("Please enter a company name!")
+    # Format the final output
+    final_output = format_output(company_name, industry, use_cases, datasets)
+
+    return final_output
+
+
+# Example usage
+company_name = input("Enter the company name: ")
+
+# Generate use cases and dataset links for the given company
+output = generate_use_case(company_name)
+
+# Print the final formatted output
+print(output)
