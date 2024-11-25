@@ -1,33 +1,31 @@
-# app/main.py
-
 import streamlit as st
-from agents.research_agent import fetch_industry_and_offerings
+from agents.research_agent import fetch_company_info
 from agents.use_case_agent import generate_use_cases
-from agents.resource_agent import find_relevant_resources
+from agents.resource_agent import collect_resources
 
-st.title("Market Research & Use Case Generator")
+st.title("AI/GenAI Market Research & Use Case Generator")
 
-company_name = st.text_input("Enter Company Name", "Google")
-industry, offerings = fetch_industry_and_offerings(company_name)
+# Input: Company name
+company_name = st.text_input("Enter the company name:")
 
-if not industry:
-    st.warning("Industry could not be fetched. Please enter manually.")
-    industry = st.text_input("Industry", "")
-else:
-    st.success(f"Identified Industry: {industry}")
+if st.button("Generate"):
+    if company_name:
+        # Fetch company info and industry
+        industry = fetch_company_info(company_name)
+        focus_areas = "Customer Experience, Operations, Supply Chain"  # Example placeholder
 
-insights = st.text_area("Enter Insights about the Industry", "AI is transforming industries globally.")
+        st.write(f"**Company Name:** {company_name}")
+        st.write(f"**Industry:** {industry}")
 
-if st.button("Generate Use Cases"):
-    if industry:
-        use_cases = generate_use_cases(industry, insights)
-        st.text_area("Generated Use Cases", value=use_cases, height=400)
+        # Generate use cases
+        use_cases = generate_use_cases(industry, focus_areas)
+        st.write("### AI/GenAI Use Cases")
+        st.write(use_cases)
+
+        # Collect resource links
+        resources = collect_resources(f"{industry} AI datasets")
+        st.write("### Relevant Datasets")
+        for platform, link in resources.items():
+            st.markdown(f"- [{platform}]({link})")
     else:
-        st.error("Industry information is required.")
-
-if st.button("Find Resources"):
-    for use_case in use_cases.split("\n\n"):
-        resources = find_relevant_resources(use_case)
-        st.write(f"Resources for '{use_case}':")
-        for resource in resources:
-            st.markdown(f"- [{resource}]({resource})")
+        st.error("Please enter a company name!")
