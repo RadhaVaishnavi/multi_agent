@@ -1,34 +1,46 @@
-# main.py
-import streamlit as st
-from tasks import perform_research
+import os
+from crewai import Crew, Process
+from agents import MarketResearchCrewAgents
+from tasks import MarketResearchCrewTasks
 
-def main():
-    st.title("Market Research Model")
+class MarketResearchCrew:
+    def __init__(self, inputs):
+        self.inputs = inputs
+        self.agents = MarketResearchCrewAgents()
+        self.tasks = MarketResearchCrewTasks()
 
-    # Input section
-    company_name = st.text_input("Enter Company Name:")
+    def run(self):
+        # Initialize agents
+        researcher = self.agents.researcher()
+        use_case_expert = self.agents.use_case_expert()
+        resource_expert = self.agents.resource_expert()
 
-    if company_name:
-        st.write(f"Performing research for: {company_name}")
-        
-        # Call the task to perform research
-        results = perform_research(company_name)
+        # Initialize tasks with respective agents
+        research_task = self.tasks.research_task(researcher, self.inputs)
+        use_case_task = self.tasks.use_case_task(use_case_expert, [research_task])
+        resource_task = self.tasks.resource_task(resource_expert, [use_case_task])
 
-        # Display the results
-        st.header(f"Industry: {results['industry']}")
-        st.subheader("Vision and Product Info:")
-        st.write(f"Vision: {results['vision']}")
-        st.write(f"Product Info: {results['product_info']}")
+        # Form the crew with defined agents and tasks
+        crew = Crew(
+            agents=[researcher, use_case_expert, resource_expert],
+            tasks=[research_task, use_case_task, resource_task],
+            process=Process.sequential
+        )
 
-        st.header("Proposed Use Cases")
-        for use_case in results['use_cases']:
-            st.write(f"- {use_case}")
-
-        st.header("Relevant Datasets")
-        for resource in results['resources']:
-            st.write(f"Use Case: {resource['use_case']}")
-            for dataset in resource['datasets']:
-                st.markdown(f"- [{dataset}]({dataset})")
+        # Execute the crew to carry out the market research project
+        return crew.kickoff()
 
 if __name__ == "__main__":
-    main()
+    print("Welcome to the Market Research Crew Setup")
+    print("-------------------------------------------")
+    company_name = input("Please enter the company's name: ")
+    industry_name = input("Optional: Enter the industry name (or leave blank): ")
+
+    inputs = f"Company Name: {company_name}\nIndustry Name: {industry_name if industry_name else 'Unknown'}"
+    research_crew = MarketResearchCrew(inputs)
+    result = research_crew.run()
+
+    print("\n\n##############################")
+    print("## Here are the results of your market research project:")
+    print("##############################\n")
+    print(result)
