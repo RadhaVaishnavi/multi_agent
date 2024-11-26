@@ -3,6 +3,11 @@ from main import MarketResearchAgents
 
 st.title("Market Research Assistant")
 
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+os.environ["SERPER_API_KEY"] = st.secrets["SERPER_API_KEY"]
+
+
 # Get company name input
 company_name = st.text_input("Enter the company's name:")
 
