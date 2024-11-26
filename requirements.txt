@@ -11,3 +11,4 @@ torch
 beautifulsoup4
 requests
 openai
+sqlite3
