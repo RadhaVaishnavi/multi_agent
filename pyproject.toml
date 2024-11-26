@@ -2,10 +2,14 @@
 name = "market-research-assistant"
 version = "0.1.0"
 description = "A Streamlit-based market research assistant"
+authors = ["Anonymous <anonymous@example.com>"]
+license = "MIT"
 readme = "README.md"
-python = ">=3.10,<3.13"
 
 [tool.poetry.dependencies]
+# Specify Python version here
+python = ">=3.10,<3.13"
+
 # Core Dependencies
 streamlit = "^1.13.0"
 pydantic = "^2.4.2"
@@ -13,8 +17,8 @@ langchain = "^0.1.10"
 regex = "^2023.12.25"
 
 # Optional Dependencies
-crewai = "^0.28.8" # Required for `Crew` and `Task` logic; ensure it's correctly installed.
-python-dotenv = "^1.0.0" # Useful for environment configuration but optional.
+crewai = "^0.28.8"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 # Development Tools
