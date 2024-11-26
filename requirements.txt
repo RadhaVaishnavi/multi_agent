@@ -3,7 +3,7 @@ transformers
 beautifulsoup4
 requests
 torch
-
+kaggle
 selenium
 numpy
 pandas
