@@ -1,20 +1,20 @@
-streamlit==1.14.0
-crewai==0.1.0  # or the correct version for your project
-chromadb==0.3.0  # or the correct version
-pydantic==1.10.4
-pandas==1.5.3
-requests==2.28.1
-beautifulsoup4==4.12.2
-scikit-learn==1.2.0
-torch==1.13.0  # if using PyTorch
-transformers==4.24.0
-numpy==1.23.5
-matplotlib==3.7.1
-seaborn==0.12.2
-flask==2.2.2
-fastapi==0.95.0
-pytest==7.2.2
-sqlalchemy==2.0.9
-pip==24.3.1
-setuptools==67.0.0
+streamlit
+crewai
+chromadb
+pydantic
+pandas
+requests
+beautifulsoup4
+scikit-learn
+torch
+transformers
+numpy
+matplotlib
+seaborn
+flask
+fastapi
+pytes
+sqlalchemy
+pip
+setuptools
 
