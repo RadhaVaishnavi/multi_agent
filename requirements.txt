@@ -3,3 +3,5 @@ langchain
 langchain-openai
 crewai-tools
 decouple
+streamlit
+langchain_groq
