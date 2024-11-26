@@ -18,3 +18,4 @@ kaggle-api
 huggingface
 gitPython
 kaggle.json
+openai-community
