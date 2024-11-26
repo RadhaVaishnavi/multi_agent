@@ -1,5 +1,6 @@
 from crewai import Crew, Process
 from tasks import MarketResearchTasks
+from agents import MarketResearchAgents
 
 class MarketResearchAgents:
     def __init__(self, inputs):
