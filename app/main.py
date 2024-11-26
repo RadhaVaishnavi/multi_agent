@@ -4,11 +4,11 @@ from agents.use_case_agent import generate_use_cases
 from agents.resource_agent import search_datasets
 
 # Streamlit app setup
-st.title("AI/GenAI Market Research & Use Case Generator")
+st.title("AI/GenAI Use Cases for Hetero Healthcare")
 
 # Input fields
-company_name = st.text_input("Enter Company Name:")
-industry_name = st.text_input("Enter Industry Name (optional):")
+company_name = st.text_input("Enter Company Name:", "Hetero Healthcare")
+industry_name = st.text_input("Enter Industry Name (optional):", "Pharmaceuticals")
 
 if st.button("Generate Insights"):
     if company_name:
