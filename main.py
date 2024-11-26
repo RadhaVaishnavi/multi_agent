@@ -1,4 +1,3 @@
-from crewai import Crew, Process
 from agents import MarketResearchAgents
 
 class MarketResearchCrew:
@@ -7,11 +6,6 @@ class MarketResearchCrew:
         self.agents = MarketResearchAgents()
 
     def run(self):
-        # Initialize agents
-        research_agent = self.agents.research_agent()
-        use_case_agent = self.agents.use_case_agent()
-        resource_agent = self.agents.resource_agent()
-
         # Simulating results without database interaction
         industry = "Technology" if "tech" in self.inputs.lower() else "General"
         use_cases = ["AI-driven customer support", "Predictive maintenance", "Data analytics"]
