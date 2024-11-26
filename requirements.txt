@@ -7,3 +7,4 @@ transformers
 torch
 kaggle
 huggingface_hub
+sshleifer/distilbart-cnn-12-6
