@@ -18,3 +18,5 @@ sqlalchemy
 pip
 setuptools
 chatopenai
+langchain_openai 
+crewai-tools
