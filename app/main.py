@@ -1,43 +1,58 @@
-from agents.research_agent import get_company_industry
-from agents.use_case_agent import generate_use_cases
-from agents.resource_agent import search_datasets, format_output
+from flask import Flask, render_template, request
+from research_agent import classify_industry, fetch_vision_and_product_info
+from use_case_agent import generate_use_cases
+from resource_agent import search_kaggle_resources, search_huggingface_resources, search_github_resources
 
+app = Flask(__name__)
 
-def fetch_industry_and_use_cases(company_name):
+@app.route('/')
+def home():
     """
-    Fetch the industry and generate use cases for the given company name.
+    Render the home page with a form to input the company name.
     """
-    # Scrape the industry for the company
-    industry = get_company_industry(company_name)
+    return render_template('index.html')
 
-    # Generate use cases based on the industry
-    use_cases = generate_use_cases(industry)
-
-    return industry, use_cases
-
-def generate_use_case(company_name):
+@app.route('/results', methods=['POST'])
+def results():
     """
-    Generate use cases and dataset links for the company based on the company name.
+    Process the input company name, run the agents, and display the results.
     """
-    # Fetch industry and use cases
-    industry, use_cases = fetch_industry_and_use_cases(company_name)
+    company_name = request.form['company_name']
+    if not company_name:
+        return render_template('index.html', error="Please enter a company name.")
 
-    # Search for relevant datasets based on use cases
-    datasets = []
-    for use_case in use_cases:
-        datasets.extend(search_datasets(use_case["title"]))
+    # Research Agent
+    try:
+        industry = classify_industry(company_name)
+        vision_info = fetch_vision_and_product_info(company_name)
+    except Exception as e:
+        return render_template('index.html', error=f"Error in Research Agent: {e}")
 
-    # Format the final output
-    final_output = format_output(company_name, industry, use_cases, datasets)
+    # Use Case Agent
+    try:
+        use_cases = generate_use_cases(industry)
+    except Exception as e:
+        return render_template('index.html', error=f"Error in Use Case Agent: {e}")
 
-    return final_output
+    # Resource Agent
+    try:
+        resources = {
+            "Kaggle": search_kaggle_resources(industry),
+            "Hugging Face": search_huggingface_resources(industry),
+            "GitHub": search_github_resources(industry),
+        }
+    except Exception as e:
+        return render_template('index.html', error=f"Error in Resource Agent: {e}")
 
+    # Render the results page
+    return render_template(
+        'results.html',
+        company_name=company_name,
+        industry=industry,
+        vision_info=vision_info,
+        use_cases=use_cases,
+        resources=resources
+    )
 
-# Example usage
-company_name = input("Enter the company name: ")
-
-# Generate use cases and dataset links for the given company
-output = generate_use_case(company_name)
-
-# Print the final formatted output
-print(output)
+if __name__ == "__main__":
+    app.run(debug=True)
