@@ -14,6 +14,8 @@ if st.button("Analyze"):
     if not company_name.strip():
         st.error("Please enter a valid company name.")
     else:
+        industry = None
+
         # Research Agent
         try:
             st.subheader("Step 1: Industry Classification")
@@ -27,29 +29,35 @@ if st.button("Analyze"):
             st.error(f"Error in Research Agent: {e}")
 
         # Use Case Agent
-        try:
-            st.subheader("Step 3: Proposed AI/ML Use Cases")
-            use_cases = generate_use_cases(industry)
-            for idx, use_case in enumerate(use_cases, start=1):
-                st.write(f"{idx}. {use_case}")
-        except Exception as e:
-            st.error(f"Error in Use Case Agent: {e}")
+        if industry:
+            try:
+                st.subheader("Step 3: Proposed AI/ML Use Cases")
+                use_cases = generate_use_cases(industry)
+                for idx, use_case in enumerate(use_cases, start=1):
+                    st.write(f"{idx}. {use_case}")
+            except Exception as e:
+                st.error(f"Error in Use Case Agent: {e}")
+        else:
+            st.warning("Industry could not be identified. Skipping use case generation.")
 
         # Resource Agent
-        try:
-            st.subheader("Step 4: Relevant Resources")
-            st.write("### Kaggle Resources:")
-            kaggle_links = search_kaggle_resources(industry)
-            for link in kaggle_links:
-                st.write(f"- [Dataset Link]({link})")
+        if industry:
+            try:
+                st.subheader("Step 4: Relevant Resources")
+                st.write("### Kaggle Resources:")
+                kaggle_links = search_kaggle_resources(industry)
+                for link in kaggle_links:
+                    st.write(f"- [Dataset Link]({link})")
 
-            st.write("### Hugging Face Resources:")
-            hf_link = search_huggingface_resources(industry)
-            st.write(f"- [Search Results]({hf_link})")
+                st.write("### Hugging Face Resources:")
+                hf_link = search_huggingface_resources(industry)
+                st.write(f"- [Search Results]({hf_link})")
 
-            st.write("### GitHub Resources:")
-            github_links = search_github_resources(industry)
-            for link in github_links:
-                st.write(f"- [Repository Link]({link})")
-        except Exception as e:
-            st.error(f"Error in Resource Agent: {e}")
+                st.write("### GitHub Resources:")
+                github_links = search_github_resources(industry)
+                for link in github_links:
+                    st.write(f"- [Repository Link]({link})")
+            except Exception as e:
+                st.error(f"Error in Resource Agent: {e}")
+        else:
+            st.warning("Industry could not be identified. Skipping resource retrieval.")
