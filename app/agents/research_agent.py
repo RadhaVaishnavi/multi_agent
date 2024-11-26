@@ -1,53 +1,36 @@
 import requests
 from bs4 import BeautifulSoup
-from transformers import pipeline
 
-def classify_industry(company_name):
-    # Scrape data (example: LinkedIn or Crunchbase)
-    query = f"{company_name} industry"
-    search_url = f"https://www.google.com/search?q={query}"
-    response = requests.get(search_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+def fetch_industry_info(industry_name):
+    """Fetch industry trends and insights using web scraping."""
+    try:
+        url = f"https://www.google.com/search?q={industry_name}+industry+trends+AI"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        response = requests.get(url, headers=headers)
 
-    # Example classification (improve with ML model later)
-    if "automobile" in soup.text.lower():
-        industry = "Automotive"
-    else:
-        industry = "Unknown"
-    
-    return industry
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            results = soup.find_all('h3')
+            insights = [result.text for result in results[:5]]
+            return {"industry_name": industry_name, "insights": insights}
+        else:
+            return {"error": f"Failed to fetch industry data (Status code {response.status_code})."}
+    except Exception as e:
+        return {"error": f"Error occurred: {str(e)}"}
 
-def fetch_vision_and_product_info(company_name):
-    # Use web scraping or GPT-based API to summarize information
-    url = f"https://www.example.com/{company_name}"  # Replace with actual logic
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    text = soup.text[:5000]  # Extract main content
+def fetch_company_info(company_name):
+    """Fetch key company offerings and focus areas."""
+    try:
+        url = f"https://www.google.com/search?q={company_name}+company+overview"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        response = requests.get(url, headers=headers)
 
-
-
-ummarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", revision="a4f8f3e")
-
-def summarize_text(input_text):
-    # Dynamically adjust max_length based on the input length
-    input_length = len(input_text.split())  # Get the number of words in the input text
-    max_length = min(100, input_length)  # Set max_length based on input size
-    min_length = max(25, input_length // 2)  # Ensure summary is at least half the input size
-
-    # Generate summary with adjusted max_length
-    summary = summarizer(input_text, max_length=max_length, min_length=min_length, do_sample=False)
-    return summary
-
-# Example usage
-input_text = "Your input text goes here."
-summary = summarize_text(input_text)
-
-# Display the result
-print(summary)
-
-
-
-# Example Usage
-industry = classify_industry("Tesla")
-vision_info = fetch_vision_and_product_info("Tesla")
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            results = soup.find_all('h3')
+            offerings = [result.text for result in results[:5]]
+            return {"company_name": company_name, "offerings": offerings}
+        else:
+            return {"error": f"Failed to fetch company data (Status code {response.status_code})."}
+    except Exception as e:
+        return {"error": f"Error occurred: {str(e)}"}
