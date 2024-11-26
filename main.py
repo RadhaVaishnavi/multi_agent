@@ -6,12 +6,14 @@ class MarketResearchAgents:
     def __init__(self, inputs):
         self.inputs = inputs
         self.tasks = MarketResearchTasks()
+        self.agents = MarketResearchAgents()
 
     def run(self):
         # Define agents
-        research_agent = "research_agent"
-        use_case_agent = "use_case_agent"
-        resource_agent = "resource_agent"
+        research_agent = self.agents_manager.research_agent()
+        use_case_agent = self.agents_manager.use_case_agent()
+        resource_agent = self.agents_manager.resource_agent()
+
 
         # Create tasks
         research_task = self.tasks.research_task(research_agent, self.inputs)
