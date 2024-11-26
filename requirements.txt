@@ -1,10 +1,9 @@
+langchain
 openai
 beautifulsoup4
 requests
 streamlit
 gradio
+langchain_community
 transformers
 torch
-kaggle
-huggingface_hub
-sshleifer/distilbart-cnn-12-6
