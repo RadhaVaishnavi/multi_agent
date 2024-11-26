@@ -1,7 +1,5 @@
 streamlit
 langchain
 openagi
-beyondllm
-llama-index
 autogen
 crewai
