@@ -1,7 +1,7 @@
-streamlit==1.14.0
-langchain==0.0.135
-openagi==<version>
-beyondllm==<version>
-llama-index==<version>
-autogen==<version>
-crewai==<version>
+streamlit
+langchain
+openagi
+beyondllm
+llama-index
+autogen
+crewai
