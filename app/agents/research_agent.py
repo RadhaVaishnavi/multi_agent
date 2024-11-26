@@ -1,36 +1,31 @@
 import requests
 from bs4 import BeautifulSoup
 
-def fetch_industry_info(industry_name):
-    """Fetch industry trends and insights using web scraping."""
-    try:
-        url = f"https://www.google.com/search?q={industry_name}+industry+trends+AI"
-        headers = {"User-Agent": "Mozilla/5.0"}
-        response = requests.get(url, headers=headers)
+def fetch_industry_info(company_name):
+    """Fetch the industry and vision/product information for the company."""
+    industry = None
+    industry_url = f"https://www.google.com/search?q={company_name}+industry"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(industry_url, headers=headers)
 
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            results = soup.find_all('h3')
-            insights = [result.text for result in results[:5]]
-            return {"industry_name": industry_name, "insights": insights}
-        else:
-            return {"error": f"Failed to fetch industry data (Status code {response.status_code})."}
-    except Exception as e:
-        return {"error": f"Error occurred: {str(e)}"}
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        industry_results = soup.find_all('h3')  # Find the industry-related info
+        if industry_results:
+            industry = industry_results[0].text  # Assuming first result mentions industry
 
-def fetch_company_info(company_name):
-    """Fetch key company offerings and focus areas."""
-    try:
-        url = f"https://www.google.com/search?q={company_name}+company+overview"
-        headers = {"User-Agent": "Mozilla/5.0"}
-        response = requests.get(url, headers=headers)
+    if not industry:
+        return {"error": "Industry info not found."}
 
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            results = soup.find_all('h3')
-            offerings = [result.text for result in results[:5]]
-            return {"company_name": company_name, "offerings": offerings}
-        else:
-            return {"error": f"Failed to fetch company data (Status code {response.status_code})."}
-    except Exception as e:
-        return {"error": f"Error occurred: {str(e)}"}
+    # Now, fetch vision and product information
+    vision_url = f"https://www.google.com/search?q={company_name}+vision+product"
+    response = requests.get(vision_url, headers=headers)
+    vision_and_product = []
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        vision_results = soup.find_all('h3')  # Find the vision and product-related info
+        vision_and_product = [result.text for result in vision_results[:5]]  # Top 5 vision/product descriptions
+
+    return {"industry": industry, "vision_and_product": vision_and_product}
+
