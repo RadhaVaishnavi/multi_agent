@@ -1,38 +1,33 @@
 import requests
 from bs4 import BeautifulSoup
+from transformers import pipeline
 
-def get_company_industry(company_name):
-    """
-    Scrapes Wikipedia to fetch the industry/sector of a company based on its name.
-    """
-    # Replace spaces in the company name with underscores for Wikipedia URL format
-    company_name_wiki = company_name.replace(" ", "_")
-    
-    # Wikipedia URL for the company
-    url = f"https://en.wikipedia.org/wiki/{company_name_wiki}"
-    
-    # Send a GET request to the Wikipedia page
-    response = requests.get(url)
-    
-    if response.status_code != 200:
-        return "Industry information not found on Wikipedia."
-    
-    # Parse the HTML content using BeautifulSoup
+def classify_industry(company_name):
+    # Scrape data (example: LinkedIn or Crunchbase)
+    query = f"{company_name} industry"
+    search_url = f"https://www.google.com/search?q={query}"
+    response = requests.get(search_url)
     soup = BeautifulSoup(response.text, 'html.parser')
 
-    # Search for the infobox table that contains company details
-    infobox = soup.find('table', {'class': 'infobox'})
+    # Example classification (improve with ML model later)
+    if "automobile" in soup.text.lower():
+        industry = "Automotive"
+    else:
+        industry = "Unknown"
+    
+    return industry
 
-    if infobox:
-        # Try to find the "Industry" field in the infobox
-        rows = infobox.find_all('tr')
-        for row in rows:
-            th = row.find('th')
-            td = row.find('td')
+def fetch_vision_and_product_info(company_name):
+    # Use web scraping or GPT-based API to summarize information
+    url = f"https://www.example.com/{company_name}"  # Replace with actual logic
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    text = soup.text[:5000]  # Extract main content
+    summarizer = pipeline("summarization")
+    vision_summary = summarizer(text, max_length=100, min_length=30, do_sample=False)
+    return vision_summary
 
-            if th and td:
-                if 'Industry' in th.text:
-                    # Extract the industry/sector value
-                    industry = td.text.strip()
-                    return industry
-    return "Industry information not found."
+# Example Usage
+industry = classify_industry("Tesla")
+vision_info = fetch_vision_and_product_info("Tesla")
