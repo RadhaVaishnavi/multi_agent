@@ -14,7 +14,7 @@ def generate_use_cases(industry_name, insights):
         f"Generate structured AI/GenAI use cases for the {industry_name} industry based on the following insights:\n"
         f"{insights}\n\n"
         "Each use case should follow this format:\n"
-        "Use Case: [Title]\n"
+        "Use Case 1: [Title]\n"
         "Objective/Use Case: [Detailed description of the use case objective]\n"
         "AI Application: [Detailed description of AI application]\n"
         "Cross-Functional Benefit:\n"
