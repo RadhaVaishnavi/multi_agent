@@ -9,7 +9,7 @@ class MarketResearchTasks:
           expected_output=f"Industry classification and product information."
       )
 
-    def analysis_task(self, agent, context):
+    def use_case_task(self, agent, context):
       return Task(
           agent=agent,
           context=context,
@@ -17,7 +17,7 @@ class MarketResearchTasks:
           expected_output=f"List of proposed AI/ML use cases based on industry trends."
       )
 
-    def writing_task(self, agent, context, inputs):
+    def resource_task(self, agent, context, inputs):
       return Task(
           agent=agent,
           context=context,
