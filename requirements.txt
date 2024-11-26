@@ -7,3 +7,6 @@ langchain-groq
 python-dotenv
 sqlite
 chromadb
+SerperDevTool
+WebsiteSearchTool
+ScrapeWebsiteTool 
