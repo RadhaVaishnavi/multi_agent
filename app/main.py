@@ -7,8 +7,8 @@ from agents.resource_agent import search_datasets
 st.title("AI/GenAI Use Cases for Hetero Healthcare")
 
 # Input fields
-company_name = st.text_input("Enter Company Name:", "Hetero Healthcare")
-industry_name = st.text_input("Enter Industry Name (optional):", "Pharmaceuticals")
+company_name = st.text_input("Enter Company Name:")
+industry_name = st.text_input("Enter Industry Name (optional):")
 
 if st.button("Generate Insights"):
     if company_name:
