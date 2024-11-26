@@ -31,12 +31,12 @@ if st.button("Generate Insights"):
         use_cases = generate_use_cases(industry_name or company_name, industry_info['insights'])
         st.subheader("AI/GenAI Use Cases")
         for use_case in use_cases:
-            st.write(f"- {use_case}")
+            st.write(f"- {use_case}")  # This ensures each use case appears in a separate line
         
-        # Collect resources
+        # Collect resources and ensure they are formatted correctly
         st.subheader("Relevant Datasets & Tools")
         resources = collect_resources(use_cases)
         for use_case, link in resources.items():
-            st.write(f"{use_case}: [Dataset Link]({link})")
+            st.write(f"{use_case}: [Dataset Link]({link})")  # This ensures the links are clickable and properly formatted
     else:
         st.error("Company Name is required!")
