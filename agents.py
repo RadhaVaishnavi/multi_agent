@@ -2,6 +2,7 @@ from crewai import Agent
 from langchain_openai import ChatOpenAI
 from crewai_tools import SerperDevTool,WebsiteSearchTool, ScrapeWebsiteTool 
 from langchain_groq import ChatGroq  
+import os
 
 class MarketResearchAgents:
     def __init__(self):
