@@ -1,25 +1,12 @@
 import streamlit as st
-from main import run_research
+from main import main
 
-st.title('Market Research Assistant')
+st.title("Market Research Model")
+company_name = st.text_input("Enter the company's name:")
 
-company_name = st.text_input("Enter Company Name")
-
-if st.button('Run Research'):
+if st.button("Analyze"):
     if company_name:
-        # Run the research process
-        research_result, use_case_result, resource_result = run_research(company_name)
-
-        # Display the results
-        st.subheader("Industry & Vision Info")
-        st.write(research_result)
-
-        st.subheader("Proposed Use Cases")
-        st.write(use_case_result["use_cases"])
-
-        st.subheader("Relevant Resources")
-        st.write("Kaggle: ", resource_result["resource_links"]["Kaggle"])
-        st.write("HuggingFace: ", resource_result["resource_links"]["HuggingFace"])
-        st.write("GitHub: ", resource_result["resource_links"]["GitHub"])
+        results = main(company_name)
+        st.write(results)
     else:
         st.error("Please enter a company name.")
