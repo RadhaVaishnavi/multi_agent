@@ -5,3 +5,5 @@ crewai-tools
 decouple
 streamlit
 langchain_groq
+sqlite
+chromadb
