@@ -12,3 +12,4 @@ pip
 setuptools
 langchain_openai
 crewai-tools
+sqlite3
