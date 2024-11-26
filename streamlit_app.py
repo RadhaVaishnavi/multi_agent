@@ -2,7 +2,7 @@ import streamlit as st
 from main import MarketResearchAgents
 import os
 
-st.title("Market Research Assistant")
+st.title("Market Research agent")
 
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
