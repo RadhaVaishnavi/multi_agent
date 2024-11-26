@@ -8,3 +8,6 @@ langchain_groq
 chromadb
 transformers
 torch
+beautifulsoup4
+requests
+openai
