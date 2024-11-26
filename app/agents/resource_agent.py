@@ -4,41 +4,39 @@ from bs4 import BeautifulSoup
 def search_datasets(use_case):
     """Search for relevant datasets on Kaggle, HuggingFace, and GitHub."""
     
-    # Define search URLs for each platform
-    search_url_kaggle = f"https://www.kaggle.com/search?q={use_case.replace(' ', '+')}"
-    search_url_huggingface = f"https://huggingface.co/datasets?search={use_case.replace(' ', '+')}"
-    search_url_github = f"https://github.com/search?q={use_case.replace(' ', '+')}"
-
-    # Kaggle Datasets (Example: Search and find top 5 links)
-    kaggle_datasets = [
-        "https://www.kaggle.com/datasets/suraj9727/supply-chain-optimization-for-a-fmcg-company",
-        "https://www.kaggle.com/code/kelvinprawtama/supply-chain-optimization",
-        "https://www.kaggle.com/datasets/laurinbrechter/supply-chain-data",
-        "https://www.kaggle.com/code/amirmotefaker/supply-chain-analysis",
-        "https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis"
-    ]
-
-    # HuggingFace Datasets (Example: Search and find top 5 links)
-    hugface_datasets = [
-        "https://huggingface.co/datasets/supply_chain_analysis",
-        "https://huggingface.co/datasets/retail_data_analysis",
-        "https://huggingface.co/datasets/ai_for_supply_chain",
-        "https://huggingface.co/datasets/warehouse_management_data",
-        "https://huggingface.co/datasets/logistics_optimization"
-    ]
+    # Search query to find pharmaceutical/healthcare-related resources
+    query = use_case.replace(" ", "+")
     
-    # GitHub Repositories (Example: Search and find top 5 links)
-    github_repositories = [
-        "https://github.com/search?q=supply+chain+optimization",
-        "https://github.com/search?q=inventory+management+AI",
-        "https://github.com/search?q=machine+learning+logistics",
-        "https://github.com/search?q=genai+supply+chain",
-        "https://github.com/search?q=ai+warehouse+optimization"
-    ]
+    # Scraping Kaggle datasets (using a Google search workaround)
+    kaggle_search_url = f"https://www.kaggle.com/search?q={query}"
+    kaggle_page = requests.get(kaggle_search_url)
+    kaggle_soup = BeautifulSoup(kaggle_page.text, 'html.parser')
+    
+    kaggle_links = []
+    for link in kaggle_soup.find_all('a', {'class': 'sc-fzqImN iWLkxf'}):
+        kaggle_links.append("https://www.kaggle.com" + link.get('href'))
 
-    # Returning datasets as a dictionary
+    # Scraping HuggingFace datasets (direct search page)
+    huggingface_search_url = f"https://huggingface.co/datasets?search={query}"
+    huggingface_page = requests.get(huggingface_search_url)
+    huggingface_soup = BeautifulSoup(huggingface_page.text, 'html.parser')
+
+    huggingface_links = []
+    for link in huggingface_soup.find_all('a', {'class': 'sc-hGpYNS jzMsmO'}):
+        huggingface_links.append("https://huggingface.co" + link.get('href'))
+
+    # Scraping GitHub repositories (direct search)
+    github_search_url = f"https://github.com/search?q={query}"
+    github_page = requests.get(github_search_url)
+    github_soup = BeautifulSoup(github_page.text, 'html.parser')
+
+    github_links = []
+    for link in github_soup.find_all('a', {'class': 'v-align-middle'}):
+        github_links.append("https://github.com" + link.get('href'))
+
+    # Return the gathered links
     return {
-        "Kaggle": kaggle_datasets,
-        "HuggingFace": hugface_datasets,
-        "GitHub": github_repositories
+        "Kaggle": kaggle_links[:5],  # Limit to 5 results
+        "HuggingFace": huggingface_links[:5],  # Limit to 5 results
+        "GitHub": github_links[:5]  # Limit to 5 results
     }
