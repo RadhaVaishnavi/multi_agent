@@ -13,7 +13,7 @@ if st.button("Analyze"):
         st.subheader("Results:")
         st.write(f"**Industry:** {result['Industry']}")
         st.write("**Suggested Use Cases:**")
-        for use_case in result["Suggested Use Cases"]:
+        for use_case_agent in result["Suggested Use Cases"]:
             st.write(f"- {use_case}")
     else:
         st.error("Please enter a company name.")
