@@ -3,10 +3,10 @@ beautifulsoup4
 streamlit
 crewai-tools
 langchain-openai
-langchain-groq
 python-dotenv
 sqlite
 chromadb
 SerperDevTool
 WebsiteSearchTool
 ScrapeWebsiteTool 
+textwrap
