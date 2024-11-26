@@ -24,9 +24,29 @@ def fetch_vision_and_product_info(company_name):
     soup = BeautifulSoup(response.text, 'html.parser')
     
     text = soup.text[:5000]  # Extract main content
-    summarizer = pipeline("summarization")
-    vision_summary = summarizer(text, max_length=100, min_length=30, do_sample=False)
-    return vision_summary
+
+
+
+summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+
+def summarize_text(input_text):
+    # Dynamically adjust max_length based on the input length
+    input_length = len(input_text.split())
+    max_length = min(100, input_length)  # Set max_length based on input size
+    min_length = max(25, input_length // 2)  # Ensure summary is at least half the input size
+
+    # Generate summary with adjusted max_length
+    summary = summarizer(input_text, max_length=max_length, min_length=min_length, do_sample=False)
+    return summary
+
+# Example usage
+input_text = "Your input text goes here."
+summary = summarize_text(input_text)
+
+# Display the result
+print(summary)
+
+
 
 # Example Usage
 industry = classify_industry("Tesla")
