@@ -12,3 +12,4 @@ beautifulsoup4
 requests
 openai
 sqlite3
+faiss-cpu
