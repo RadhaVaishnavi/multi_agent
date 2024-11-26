@@ -1,56 +1,57 @@
-# agents.py
-import requests
-from bs4 import BeautifulSoup
-from transformers import pipeline
+from crewai import Agent
+from langchain_openai import ChatOpenAI  # Using GPT-4 model from OpenAI
+from crewai_tools import SerperDevTool, WebsiteSearchTool, ScrapeWebsiteTool
+import os
 
-class ResearchAgent:
+
+class MarketResearchCrewAgents:
+
     def __init__(self):
-        self.classifier = pipeline("zero-shot-classification", model="gpt-4")
+        # Initialize tools
+        self.serper = SerperDevTool()
+        self.web = WebsiteSearchTool()
+        self.web_scrape = ScrapeWebsiteTool()
 
-    def get_industry_info(self, company_name):
-        # Placeholder for web scraping logic to determine the company's industry
-        # In practice, use web scraping (e.g., using requests and BeautifulSoup) or an API
-        industries = ["Automotive", "Manufacturing", "Finance", "Retail", "Healthcare"]
-        industry = self._scrape_industry(company_name)
-        
-        # Getting the vision and product information
-        vision, product_info = self._get_vision_and_product(industry)
-        return industry, vision, product_info
+        # OpenAI Models
+        self.gpt4 = ChatOpenAI(model_name="gpt-4-turbo", temperature=0.7)
 
-    def _scrape_industry(self, company_name):
-        # Example: scraping logic to find the industry
-        return "Finance"  # Example, replace with actual scraping logic
+        # Set the selected model for the agent
+        self.selected_llm = self.gpt4
 
-    def _get_vision_and_product(self, industry):
-        # Placeholder for industry vision and product info
-        industry_info = {
-            "Automotive": ("To innovate in sustainable transportation", "Electric vehicles, Autonomous systems"),
-            "Finance": ("To enable secure financial transactions", "Banking, Investment services"),
-            "Healthcare": ("To provide accessible healthcare solutions", "Medical devices, Health apps"),
-        }
-        return industry_info.get(industry, ("No vision info", "No product info"))
+    def researcher(self):
+        # Researcher agent for gathering company and industry-related insights
+        return Agent(
+            role='Researcher',
+            goal='Identify the industry of the company and gather relevant product and vision information for the sector.',
+            backstory="You are a highly skilled researcher who can break down company information and relate it to industry trends.",
+            verbose=True,
+            allow_delegation=False,
+            llm=self.selected_llm,
+            max_iter=3,
+            tools=[self.serper, self.web, self.web_scrape]
+        )
 
-class UseCaseAgent:
-    def __init__(self):
-        self.classifier = pipeline("zero-shot-classification", model="gpt-4")
+    def use_case_expert(self):
+        # Use case agent for analyzing AI, ML, and automation trends and proposing relevant use cases
+        return Agent(
+            role='Use Case Expert',
+            goal='Analyze the industry trends and propose AI/ML use cases that can improve the company’s processes.',
+            backstory="You are an AI and ML expert, skilled in identifying cutting-edge solutions for improving business operations.",
+            verbose=True,
+            allow_delegation=False,
+            llm=self.selected_llm,
+            max_iter=3
+        )
 
-    def generate_use_cases(self, industry):
-        # Generate use cases for AI, ML, and GenAI based on the industry
-        use_cases = {
-            "Automotive": ["Predictive maintenance", "Customer behavior analysis"],
-            "Finance": ["Fraud detection", "Algorithmic trading"],
-            "Healthcare": ["Predictive health analytics", "AI-driven diagnostics"],
-        }
-        return use_cases.get(industry, ["AI-powered customer support", "Data-driven decision making"])
-
-class ResourceAgent:
-    def __init__(self):
-        pass
-
-    def fetch_datasets(self, use_case):
-        # Search Kaggle, HuggingFace, and GitHub for relevant datasets based on the use case
-        datasets = {
-            "Predictive maintenance": ["Kaggle dataset link 1", "GitHub dataset link 1"],
-            "Fraud detection": ["HuggingFace dataset link 1", "GitHub dataset link 2"],
-        }
-        return datasets.get(use_case, ["No datasets found for this use case"])
+    def resource_expert(self):
+        # Resource agent for finding relevant datasets and resources
+        return Agent(
+            role='Resource Expert',
+            goal='Search and provide relevant datasets, articles, and resources to support the proposed use cases.',
+            backstory="You are an expert in curating datasets and finding online resources that help in executing AI and ML solutions.",
+            verbose=True,
+            allow_delegation=False,
+            llm=self.selected_llm,
+            max_iter=3,
+            tools=[self.serper, self.web, self.web_scrape]
+        )
