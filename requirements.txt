@@ -7,3 +7,5 @@ streamlit
 langchain_groq
 sqlite
 chromadb
+transformers
+torch
