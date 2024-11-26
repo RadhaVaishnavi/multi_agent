@@ -1,57 +1,75 @@
 from crewai import Agent
-from langchain_openai import ChatOpenAI  # Using GPT-4 model from OpenAI
-from crewai_tools import SerperDevTool, WebsiteSearchTool, ScrapeWebsiteTool
-import os
+import requests
+from bs4 import BeautifulSoup
+import openai
+
+class ResearchAgent(Agent):
+    def __init__(self, inputs):
+        self.inputs = inputs
+
+    def run(self):
+        # Extract company name
+        company_name = self.inputs
+        industry = self.get_industry_from_web(company_name)
+        vision_and_product = self.get_industry_vision_and_products(industry)
+
+        return {"industry": industry, "vision_and_product": vision_and_product}
+
+    def get_industry_from_web(self, company_name):
+        # Example of scraping logic to find the company's industry
+        search_query = f"{company_name} industry"
+        response = requests.get(f"https://www.google.com/search?q={search_query}")
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Simplified scraping - Ideally, this should be more complex
+        industry = soup.find('div', {'class': 'BNeawe iBp4i AP7Wnd'}).text
+        return industry
+
+    def get_industry_vision_and_products(self, industry):
+        # Example for providing vision and products based on industry
+        industry_vision = {
+            "Automotive": "Innovative vehicles with AI-based safety features.",
+            "Healthcare": "Improving patient care with AI-powered diagnostics.",
+        }
+        return industry_vision.get(industry, "No vision found for this industry.")
 
 
-class MarketResearchCrewAgents:
+class UseCaseAgent(Agent):
+    def __init__(self, inputs):
+        self.inputs = inputs
 
-    def __init__(self):
-        # Initialize tools
-        self.serper = SerperDevTool()
-        self.web = WebsiteSearchTool()
-        self.web_scrape = ScrapeWebsiteTool()
+    def run(self):
+        industry = self.inputs["industry"]
+        use_cases = self.generate_use_cases_for_industry(industry)
+        return {"use_cases": use_cases}
 
-        # OpenAI Models
-        self.gpt4 = ChatOpenAI(model_name="gpt-4-turbo", temperature=0.7)
-
-        # Set the selected model for the agent
-        self.selected_llm = self.gpt4
-
-    def researcher(self):
-        # Researcher agent for gathering company and industry-related insights
-        return Agent(
-            role='Researcher',
-            goal='Identify the industry of the company and gather relevant product and vision information for the sector.',
-            backstory="You are a highly skilled researcher who can break down company information and relate it to industry trends.",
-            verbose=True,
-            allow_delegation=False,
-            llm=self.selected_llm,
-            max_iter=3,
-            tools=[self.serper, self.web, self.web_scrape]
+    def generate_use_cases_for_industry(self, industry):
+        # Use GPT-4 to generate use cases based on industry
+        prompt = f"Generate AI, ML, and automation use cases for the {industry} industry."
+        response = openai.Completion.create(
+            model="gpt-4",
+            prompt=prompt,
+            max_tokens=300,
+            temperature=0.7
         )
+        return response.choices[0].text.strip()
 
-    def use_case_expert(self):
-        # Use case agent for analyzing AI, ML, and automation trends and proposing relevant use cases
-        return Agent(
-            role='Use Case Expert',
-            goal='Analyze the industry trends and propose AI/ML use cases that can improve the company’s processes.',
-            backstory="You are an AI and ML expert, skilled in identifying cutting-edge solutions for improving business operations.",
-            verbose=True,
-            allow_delegation=False,
-            llm=self.selected_llm,
-            max_iter=3
-        )
 
-    def resource_expert(self):
-        # Resource agent for finding relevant datasets and resources
-        return Agent(
-            role='Resource Expert',
-            goal='Search and provide relevant datasets, articles, and resources to support the proposed use cases.',
-            backstory="You are an expert in curating datasets and finding online resources that help in executing AI and ML solutions.",
-            verbose=True,
-            allow_delegation=False,
-            llm=self.selected_llm,
-            max_iter=3,
-            tools=[self.serper, self.web, self.web_scrape]
-        )
+class ResourceAgent(Agent):
+    def __init__(self, inputs):
+        self.inputs = inputs
+
+    def run(self):
+        use_cases = self.inputs["use_cases"]
+        resource_links = self.find_relevant_resources(use_cases)
+        return {"resource_links": resource_links}
+
+    def find_relevant_resources(self, use_cases):
+        # Search for relevant datasets related to use cases on Kaggle, HuggingFace, GitHub
+        # In practice, we would use APIs for these platforms. Below is a simplified example
+        links = {
+            "Kaggle": f"https://www.kaggle.com/search?q={use_cases.replace(' ', '+')}",
+            "HuggingFace": f"https://huggingface.co/datasets?search={use_cases.replace(' ', '+')}",
+            "GitHub": f"https://github.com/search?q={use_cases.replace(' ', '+')}"
+        }
+        return links
