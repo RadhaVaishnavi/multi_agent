@@ -13,3 +13,4 @@ setuptools
 langchain_openai
 crewai-tools
 sqlite3
+pysqlite3
