@@ -27,11 +27,11 @@ def fetch_vision_and_product_info(company_name):
 
 
 
-summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+ummarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", revision="a4f8f3e")
 
 def summarize_text(input_text):
     # Dynamically adjust max_length based on the input length
-    input_length = len(input_text.split())
+    input_length = len(input_text.split())  # Get the number of words in the input text
     max_length = min(100, input_length)  # Set max_length based on input size
     min_length = max(25, input_length // 2)  # Ensure summary is at least half the input size
 
