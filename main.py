@@ -1,4 +1,8 @@
-from agents import MarketResearchAgents
+from crewai import Crew, Process
+from textwrap import dedent
+
+from agents import MarketResearchCrew
+from tasks import MarketResearchTasks
 
 class MarketResearchCrew:
     def __init__(self, inputs):
