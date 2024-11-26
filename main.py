@@ -4,6 +4,7 @@ from agents import MarketResearchAgents
 
 from decouple import config
 from textwrap import dedent
+import os
 
 class MarketResearchAgents:
     def __init__(self, inputs):
