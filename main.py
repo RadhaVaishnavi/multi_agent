@@ -11,14 +11,24 @@ class MarketResearchAgents:
         self.tasks = MarketResearchTasks()
 
     def run(self):
-        # Simulating results without database interaction
-        industry = "Technology" if "tech" in self.inputs.lower() else "General"
-        use_cases = ["AI-driven customer support", "Predictive maintenance", "Data analytics"]
+        research_agent = self.agents.research_agent()
+        use_case_agent = self.agents.use_case_agent()
+        resource_agent = self.agents.resource_agent()
 
-        return {
-            "Industry": industry,
-            "Suggested Use Cases": use_cases
-        }
+ # Initialize tasks with respective agents
+        research_task = self.tasks.research_task(researcher, self.inputs)
+        use_case_task = self.tasks.use_case_task(analyst, [research_task])
+        resource_task = self.tasks.resource_task(writer, [analysis_task],self.inputs)
+
+# Form the crew with defined agents and tasks
+        crew = Crew(
+            agents=[research_agent, use_case_agent, resource_agent],
+            tasks=[research_task, use_case_task, resource_task],
+            process=Process.sequential
+        )
+
+        # Execute the crew to carry out the research project
+        return crew.kickoff()
 
 if __name__ == "__main__":
     print("Welcome to the Market Research Crew Setup")
