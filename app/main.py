@@ -1,81 +1,46 @@
+import sys
+import os
+
+print("Python Paths:", sys.path)  # Debugging: Check available paths
+print("Current Directory:", os.getcwd())  # Debugging: Check where the app runs from
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import streamlit as st
-from agents.research_agent import classify_industry, fetch_vision_and_product_info
+from agents.research_agent import fetch_industry_info, fetch_company_info
 from agents.use_case_agent import generate_use_cases
-from agents.resource_agent import search_kaggle_resources, search_huggingface_resources, search_github_resources
+from agents.resource_agent import collect_resources
 
+st.title("AI/GenAI Market Research & Use Case Generator")
 
-# Load the model and tokenizer once to save time
-@st.cache_resource
-def load_model():
-    tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2-large")
-    model = AutoModelForCausalLM.from_pretrained("openai-community/gpt2-large")
-    return tokenizer, model
+# Input fields
+industry_name = st.text_input("Enter the Industry Name (e.g., Retail, Healthcare):")
+company_name = st.text_input("Enter the Company Name (optional):")
 
-# Generate use cases for a given industry
-@st.cache_data
-def generate_industry_use_cases(industry, tokenizer, model):
-    prompt = f"Propose AI/ML use cases for a company in the {industry} industry."
-    inputs = tokenizer(prompt, return_tensors="pt")
-    output = model.generate(inputs["input_ids"], max_length=150, num_return_sequences=1)
-    return tokenizer.decode(output[0], skip_special_tokens=True)
+if st.button("Generate Insights"):
+    # Fetch industry and company data
+    industry_info = fetch_industry_info(industry_name)
+    st.subheader("Industry Insights")
+    if "error" in industry_info:
+        st.error(industry_info["error"])
+    else:
+        st.write(industry_info)
 
-# Main app
-def main():
-    st.title("Market Research AI Tool")
+    if company_name:
+        company_info = fetch_company_info(company_name)
+        st.subheader("Company Offerings")
+        if "error" in company_info:
+            st.error(company_info["error"])
+        else:
+            st.write(company_info)
 
-    # Input field for company name
-    company_name = st.text_input("Enter the company name:")
+    # Generate AI use cases
+    if "insights" in industry_info:
+        use_cases = generate_use_cases(industry_name, industry_info['insights'])
+        st.subheader("AI/GenAI Use Cases")
+        st.write(use_cases)
 
-    if st.button("Analyze"):
-        if not company_name.strip():
-            st.error("Please enter a valid company name.")
-            return
-
-        try:
-            # Step 1: Research Agent
-            st.subheader("Step 1: Industry Classification")
-            industry = classify_industry(company_name)
-            st.write(f"**Identified Industry:** {industry}")
-
-            st.subheader("Step 2: Vision and Product Information")
-            vision_info = fetch_vision_and_product_info(company_name)
-            st.write(f"**Vision & Product Information:** {vision_info}")
-
-        except Exception as e:
-            st.error(f"Error in Research Agent: {e}")
-            return
-
-        # Step 2: Use Case Agent (only proceed if industry is classified)
-        if industry:
-            tokenizer, model = load_model()
-            try:
-                st.subheader("Step 3: Proposed AI/ML Use Cases")
-                use_cases = generate_industry_use_cases(industry, tokenizer, model)
-                st.write(f"**Proposed Use Cases for {industry}:**\n{use_cases}")
-            except Exception as e:
-                st.error(f"Error in Use Case Agent: {e}")
-
-        # Step 3: Resource Agent (only proceed if industry is classified)
-        if industry:
-            try:
-                st.subheader("Step 4: Relevant Resources")
-
-                st.write("### Kaggle Resources:")
-                kaggle_links = search_kaggle_resources(industry)
-                for link in kaggle_links:
-                    st.write(f"- [Dataset Link]({link})")
-
-                st.write("### Hugging Face Resources:")
-                hf_link = search_huggingface_resources(industry)
-                st.write(f"- [Search Results]({hf_link})")
-
-                st.write("### GitHub Resources:")
-                github_links = search_github_resources(industry)
-                for link in github_links:
-                    st.write(f"- [Repository Link]({link})")
-
-            except Exception as e:
-                st.error(f"Error in Resource Agent: {e}")
-
-if __name__ == "__main__":
-    main()
+        # Collect resources
+        st.subheader("Relevant Datasets & Tools")
+        resources = collect_resources([use_cases])
+        for use_case, link in resources.items():
+            st.write(f"{use_case}: {link}")
