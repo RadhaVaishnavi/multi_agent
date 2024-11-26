@@ -1,6 +1,5 @@
 from crewai import Agent
 from langchain_openai import ChatOpenAI
-import os
 
 class MarketResearchAgents:
 
@@ -24,17 +23,6 @@ class MarketResearchAgents:
             role='Use Case Agent',
             goal='Analyze industry trends and propose relevant AI/ML use cases for the company.',
             backstory="You are an analyst skilled in identifying opportunities for AI and ML applications in various industries.",
-            verbose=True,
-            allow_delegation=False,
-            llm=self.gpt4,
-            max_iter=3,
-        )
-
-    def resource_agent(self):
-        return Agent(
-            role='Resource Agent',
-            goal='Collect datasets related to proposed use cases from various platforms.',
-            backstory="You are a resource expert who can find and summarize relevant datasets for AI applications.",
             verbose=True,
             allow_delegation=False,
             llm=self.gpt4,
