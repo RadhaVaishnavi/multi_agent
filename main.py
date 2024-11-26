@@ -2,6 +2,9 @@ from crewai import Crew, Process
 from tasks import MarketResearchTasks
 from agents import MarketResearchAgents
 
+from decouple import config
+from textwrap import dedent
+
 class MarketResearchAgents:
     def __init__(self, inputs):
         self.inputs = inputs
@@ -10,9 +13,9 @@ class MarketResearchAgents:
 
     def run(self):
         # Define agents
-        research_agent = self.agents_manager.research_agent()
-        use_case_agent = self.agents_manager.use_case_agent()
-        resource_agent = self.agents_manager.resource_agent()
+        research_agent = self.agents.research_agent()
+        use_case_agent = self.agents.use_case_agent()
+        resource_agent = self.agents.resource_agent()
 
 
         # Create tasks
