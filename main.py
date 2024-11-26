@@ -1,13 +1,14 @@
 from crewai import Crew, Process
 from textwrap import dedent
 
-from agents import MarketResearchCrew
+from agents import MarketResearchAgents
 from tasks import MarketResearchTasks
 
-class MarketResearchCrew:
+class MarketResearchAgents:
     def __init__(self, inputs):
         self.inputs = inputs
         self.agents = MarketResearchAgents()
+        self.tasks = MarketResearchTasks()
 
     def run(self):
         # Simulating results without database interaction
