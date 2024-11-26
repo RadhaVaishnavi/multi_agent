@@ -6,7 +6,7 @@ class MarketResearchTasks:
       return Task(
           agent=agent,
           description=f"Identify the industry of {inputs} and gather relevant product information.",
-          expected_output="Industry classification and product information."
+          expected_output=f"Industry classification and product information."
       )
 
     def analysis_task(self, agent, context):
@@ -14,7 +14,7 @@ class MarketResearchTasks:
           agent=agent,
           context=context,
           description="Analyze industry trends and propose relevant AI/ML use cases.",
-          expected_output="List of proposed AI/ML use cases based on industry trends."
+          expected_output=f"List of proposed AI/ML use cases based on industry trends."
       )
 
     def writing_task(self, agent, context, inputs):
@@ -22,5 +22,5 @@ class MarketResearchTasks:
           agent=agent,
           context=context,
           description=f"Find datasets related to proposed use cases from platforms like Kaggle or GitHub.",
-          expected_output="Links to relevant datasets."
+          expected_output=f"Links to relevant datasets and github."
       )
