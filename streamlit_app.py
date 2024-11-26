@@ -3,20 +3,28 @@ from main import MarketResearchAgents
 
 st.title("Market Research Assistant")
 
+# Get company name input
 company_name = st.text_input("Enter the company's name:")
+
 if st.button("Analyze"):
     if company_name:
-        inputs = f"Company Name: {company_name}"
+        # Prepare inputs
+        inputs = {"company_name": company_name}
+        
+        # Run the Market Research Agents
         market_research_agent = MarketResearchAgents(inputs)
         result = market_research_agent.run()
-        
+
+        # Display results
         st.subheader("Results:")
         st.write(f"**Industry:** {result['Industry']}")
+        
         st.write("**Suggested Use Cases:**")
-        for use_case_agent in result["Suggested Use Cases"]:
+        for use_case in result["Suggested Use Cases"]:
             st.write(f"- {use_case}")
-        for resource_agent in result["Suggested Resources"]:
-            st.write(f"- {resources}")
-    
+        
+        st.write("**Suggested Resources:**")
+        for resource in result["Suggested Resources"]:
+            st.write(f"- {resource}")
     else:
         st.error("Please enter a company name.")
