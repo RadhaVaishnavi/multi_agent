@@ -3,21 +3,36 @@ from agents.research_agent import classify_industry, fetch_vision_and_product_in
 from agents.use_case_agent import generate_use_cases
 from agents.resource_agent import search_kaggle_resources, search_huggingface_resources, search_github_resources
 
-# Streamlit App
-st.title("Market Research Model")
-st.write("Enter a company's name to analyze its industry, generate AI/ML use cases, and find relevant resources.")
 
-# Input Form
-company_name = st.text_input("Company Name", placeholder="e.g., Tesla")
+# Load the model and tokenizer once to save time
+@st.cache_resource
+def load_model():
+    tokenizer = AutoTokenizer.from_pretrained("openai-community/gpt2-large")
+    model = AutoModelForCausalLM.from_pretrained("openai-community/gpt2-large")
+    return tokenizer, model
 
-if st.button("Analyze"):
-    if not company_name.strip():
-        st.error("Please enter a valid company name.")
-    else:
-        industry = None
+# Generate use cases for a given industry
+@st.cache_data
+def generate_industry_use_cases(industry, tokenizer, model):
+    prompt = f"Propose AI/ML use cases for a company in the {industry} industry."
+    inputs = tokenizer(prompt, return_tensors="pt")
+    output = model.generate(inputs["input_ids"], max_length=150, num_return_sequences=1)
+    return tokenizer.decode(output[0], skip_special_tokens=True)
 
-        # Research Agent
+# Main app
+def main():
+    st.title("Market Research AI Tool")
+
+    # Input field for company name
+    company_name = st.text_input("Enter the company name:")
+
+    if st.button("Analyze"):
+        if not company_name.strip():
+            st.error("Please enter a valid company name.")
+            return
+
         try:
+            # Step 1: Research Agent
             st.subheader("Step 1: Industry Classification")
             industry = classify_industry(company_name)
             st.write(f"**Identified Industry:** {industry}")
@@ -25,25 +40,26 @@ if st.button("Analyze"):
             st.subheader("Step 2: Vision and Product Information")
             vision_info = fetch_vision_and_product_info(company_name)
             st.write(f"**Vision & Product Information:** {vision_info}")
+
         except Exception as e:
             st.error(f"Error in Research Agent: {e}")
+            return
 
-        # Use Case Agent
+        # Step 2: Use Case Agent (only proceed if industry is classified)
         if industry:
+            tokenizer, model = load_model()
             try:
                 st.subheader("Step 3: Proposed AI/ML Use Cases")
-                use_cases = generate_use_cases(industry)
-                for idx, use_case in enumerate(use_cases, start=1):
-                    st.write(f"{idx}. {use_case}")
+                use_cases = generate_industry_use_cases(industry, tokenizer, model)
+                st.write(f"**Proposed Use Cases for {industry}:**\n{use_cases}")
             except Exception as e:
                 st.error(f"Error in Use Case Agent: {e}")
-        else:
-            st.warning("Industry could not be identified. Skipping use case generation.")
 
-        # Resource Agent
+        # Step 3: Resource Agent (only proceed if industry is classified)
         if industry:
             try:
                 st.subheader("Step 4: Relevant Resources")
+
                 st.write("### Kaggle Resources:")
                 kaggle_links = search_kaggle_resources(industry)
                 for link in kaggle_links:
@@ -57,7 +73,9 @@ if st.button("Analyze"):
                 github_links = search_github_resources(industry)
                 for link in github_links:
                     st.write(f"- [Repository Link]({link})")
+
             except Exception as e:
                 st.error(f"Error in Resource Agent: {e}")
-        else:
-            st.warning("Industry could not be identified. Skipping resource retrieval.")
+
+if __name__ == "__main__":
+    main()
