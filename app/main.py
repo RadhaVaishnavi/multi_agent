@@ -1,7 +1,7 @@
 import streamlit as st
-from research_agent import classify_industry, fetch_vision_and_product_info
-from use_case_agent import generate_use_cases
-from resource_agent import search_kaggle_resources, search_huggingface_resources, search_github_resources
+from agents.research_agent import classify_industry, fetch_vision_and_product_info
+from agents.use_case_agent import generate_use_cases
+from agents.resource_agent import search_kaggle_resources, search_huggingface_resources, search_github_resources
 
 # Streamlit App
 st.title("Market Research Model")
