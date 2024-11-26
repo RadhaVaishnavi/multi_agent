@@ -1,5 +1,6 @@
 import streamlit as st
 from main import MarketResearchAgents
+import os
 
 st.title("Market Research Assistant")
 
