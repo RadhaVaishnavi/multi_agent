@@ -7,31 +7,16 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-# Specify Python version here
 python = ">=3.10,<3.13"
-
-# Core Dependencies
 streamlit = "^1.13.0"
 pydantic = "^2.4.2"
 langchain = "^0.1.10"
 regex = "^2023.12.25"
 
-# Optional Dependencies
-crewai = "^0.28.8"
-python-dotenv = "^1.0.0"
-
 [tool.poetry.group.dev.dependencies]
-# Development Tools
-isort = "^5.13.2"
-pyright = ">=1.1.350,<2.0.0"
-autoflake = "^2.2.1"
-pre-commit = "^3.6.0"
-
-[tool.poetry.group.test.dependencies]
-# Testing Tools
 pytest = "^8.0.0"
-pytest-vcr = "^1.0.2"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
