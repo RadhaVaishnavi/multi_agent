@@ -16,3 +16,4 @@ pytest
 flask
 kaggle-api
 huggingface
+gitPython
