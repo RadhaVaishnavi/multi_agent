@@ -1,25 +1,24 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import streamlit as st
 
-# Load Hugging Face model (GPT-2 for simplicity)
-tokenizer = AutoTokenizer.from_pretrained("gpt2")  
-model = AutoModelForCausalLM.from_pretrained("gpt2")
+# Load Hugging Face model
+tokenizer = AutoTokenizer.from_pretrained("meta-llama/Llama-3.2-1B")
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-3.2-1B")
 
 def generate_use_cases(industry_name, insights):
     """
-    Generate AI/GenAI use cases using GPT-2 model and ensure proper formatting.
-    The use case will include AI application and cross-functional benefits.
+    Generate AI/GenAI use cases using a Hugging Face model and ensure proper formatting.
     """
+    # Create a structured prompt
     prompt = (
         f"Generate structured AI/GenAI use cases for the {industry_name} industry based on the following insights:\n"
         f"{insights}\n\n"
         "Each use case should follow this format:\n"
-        "Use Case 1: [Title]\n"
+        "Use Case: [Title]\n"
         "Objective/Use Case: [Detailed description of the use case objective]\n"
         "AI Application: [Detailed description of AI application]\n"
-        "Cross-Functional Benefit:\n"
-        "- [List benefits for each department/team within the company]\n\n"
-        "Please ensure proper formatting without any extra spaces or new lines."
+        "Cross-Functional Benefit: [List benefits for each department/team within the company]\n\n"
+        "Please ensure there are no extra spaces or formatting issues."
     )
 
     # Tokenize the prompt
@@ -43,5 +42,4 @@ def generate_use_cases(industry_name, insights):
     # Post-process to ensure clean output
     formatted_text = raw_text.replace("\n", " ").replace("\r", "").strip()  # Remove newlines and extra spaces
     formatted_text = ' '.join(formatted_text.split())  # Normalize spaces
-    
     return formatted_text
