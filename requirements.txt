@@ -7,3 +7,4 @@ streamlit
 langchain_groq
 sqlite
 chromadb
+sqlite3 libsqlite3-dev
