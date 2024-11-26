@@ -1,13 +1,10 @@
-import os
 from crewai import Crew, Process
 from agents import MarketResearchAgents
-from tasks import MarketResearchTasks
 
 class MarketResearchCrew:
     def __init__(self, inputs):
         self.inputs = inputs
         self.agents = MarketResearchAgents()
-        self.tasks = MarketResearchTasks()
 
     def run(self):
         # Initialize agents
@@ -15,24 +12,17 @@ class MarketResearchCrew:
         use_case_agent = self.agents.use_case_agent()
         resource_agent = self.agents.resource_agent()
 
-        # Initialize tasks with respective agents
-        research_task = self.tasks.research_task(research_agent, self.inputs)
-        analysis_task = self.tasks.analysis_task(use_case_agent, [research_task])
-        writing_task = self.tasks.writing_task(resource_agent, [analysis_task], self.inputs)
+        # Simulating results without database interaction
+        industry = "Technology" if "tech" in self.inputs.lower() else "General"
+        use_cases = ["AI-driven customer support", "Predictive maintenance", "Data analytics"]
 
-        # Form the crew with defined agents and tasks
-        crew = Crew(
-            agents=[research_agent, use_case_agent, resource_agent],
-            tasks=[research_task, analysis_task, writing_task],
-            process=Process.sequential
-        )
-
-        # Execute the crew to carry out the research project
-        return crew.kickoff()
+        return {
+            "Industry": industry,
+            "Suggested Use Cases": use_cases
+        }
 
 if __name__ == "__main__":
     print("Welcome to the Market Research Crew Setup")
-    print("---------------------------------------")
     company_name = input("Please enter the company's name: ")
     
     inputs = f"Company Name: {company_name}"
