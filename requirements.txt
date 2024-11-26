@@ -1,5 +1,5 @@
-streamlit
+crewAI
 langchain
-openagi
-autogen
-crewai
+langchain-openai
+crewai-tools
+decouple
