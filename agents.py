@@ -1,11 +1,13 @@
 from crewai import Agent
 from langchain_openai import ChatOpenAI
 from crewai_tools import SerperDevTool,WebsiteSearchTool, ScrapeWebsiteTool 
-class MarketResearchAgents:
 
+
+class MarketResearchAgents:
     def __init__(self):
         # OpenAI Models
         self.gpt4 = ChatOpenAI(model_name="gpt-4-turbo", temperature=0.7)
+        #tools
         self.serper = SerperDevTool()
         self.web = WebsiteSearchTool()
         self.web_scrape=ScrapeWebsiteTool()
