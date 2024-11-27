@@ -1,26 +1,34 @@
 import streamlit as st
-from agents.research_agent import get_company_info
-from agents.use_case_agent import generate_use_cases
-from agents.resource_agent import search_datasets, save_datasets_to_file
+from research_agent import ResearchAgent
+from usecase_agent import UseCaseAgent
+from resource_agent import ResourceAgent
 
-# Streamlit input for company name
-company_name = st.text_input("Enter Company Name:")
+# Title for the Streamlit app
+st.title("Market Research Agent")
 
+# Inputs
+company_name = st.text_input("Enter company name:")
+industry = st.selectbox("Select Industry", ["healthcare", "finance", "retail", "automotive"])
+
+# Create the agents
+research_agent = ResearchAgent(company_name)
+use_case_agent = UseCaseAgent(company_name, industry)
+resource_agent = ResourceAgent()
+
+# Get and display company information
 if company_name:
-    # Research Agent
-    industry, product_info = get_company_info(company_name)
-    st.write(f"Industry: {industry}")
-    st.write(f"Product Info: {product_info}")
-    
-    # Use Case Agent
-    use_cases = generate_use_cases(industry)
-    st.write("Proposed Use Cases:")
+    company_info = research_agent.get_company_info()
+    st.subheader("Company Analysis")
+    st.write(company_info)
+
+    # Get and display use cases
+    use_cases = use_case_agent.suggest_use_cases()
+    st.subheader("Proposed Use Cases")
     st.write(use_cases)
-    
-    # Resource Agent
-    datasets = search_datasets(use_cases)
-    st.write("Relevant Datasets:")
+
+    # Get and display relevant datasets
+    search_term = industry  # You can refine this based on the use case
+    datasets = resource_agent.collect_relevant_datasets(search_term)
+    st.subheader("Relevant Datasets")
     st.write(datasets)
-    
-    # Saving datasets to markdown file
-    save_datasets_to_file(datasets)
+
