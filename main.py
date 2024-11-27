@@ -6,7 +6,7 @@ from decouple import config
 from textwrap import dedent
 import os
 
-class MarketResearchAgents:
+class MarketResearchApplication:
     def __init__(self, inputs):
         self.inputs = inputs
         self.tasks = MarketResearchTasks()
