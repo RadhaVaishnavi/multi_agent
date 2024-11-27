@@ -7,9 +7,9 @@ def generate_use_cases(industry):
     prompt = f"Generate AI/ML use cases for the {industry} industry, focusing on improving processes, customer satisfaction, and operational efficiency."
 
     try:
-        # Using the new OpenAI chat interface for models like GPT-3.5 or GPT-4
-        response = openai.chat.Completion.create(
-            model="gpt-4",  # or use gpt-3.5-turbo for GPT-3.5
+        # Using the correct method for ChatGPT-based models like GPT-4
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # or use "gpt-3.5-turbo" for GPT-3.5
             messages=[{"role": "user", "content": prompt}]
         )
         
