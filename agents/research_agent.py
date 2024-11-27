@@ -1,20 +1,29 @@
+import wikipediaapi
 import requests
 from bs4 import BeautifulSoup
 
-def get_industry_and_product(company_name):
-    url = f"https://www.google.com/search?q={company_name}+industry"
-    response = requests.get(url)
+def get_company_info(company_name):
+    # Using Wikipedia API for company information
+    wiki_wiki = wikipediaapi.Wikipedia('en')
+    page = wiki_wiki.page(company_name)
     
-    if response.status_code != 200:
-        return None, None
-
-    soup = BeautifulSoup(response.text, 'html.parser')
+    if not page.exists():
+        return "Industry and Product Info Not Found"
     
-    # Modify these selectors based on the actual HTML structure
-    industry_element = soup.find('div', {'class': 'industry-class'})
-    product_info_element = soup.find('div', {'class': 'product-class'})
+    text = page.text
     
-    industry = industry_element.text if industry_element else 'Industry not found'
-    product_info = product_info_element.text if product_info_element else 'Product info not found'
+    # Extract industry and key offerings from the text (you can refine this with regex)
+    industry = "Not found"
+    product_info = "Not found"
+    
+    if "industry" in text.lower():
+        industry_start = text.lower().find("industry")
+        industry_end = text[industry_start:].find(".")
+        industry = text[industry_start:industry_start + industry_end].strip()
+    
+    if "product" in text.lower():
+        product_start = text.lower().find("product")
+        product_end = text[product_start:].find(".")
+        product_info = text[product_start:product_start + product_end].strip()
     
     return industry, product_info
