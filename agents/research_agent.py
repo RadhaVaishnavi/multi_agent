@@ -2,11 +2,13 @@ import wikipediaapi
 
 def get_company_info(company_name):
     try:
-        # Set up Wikipedia API with a user-agent string
+        # Correct way to specify the user-agent in Wikipedia API
         wiki_wiki = wikipediaapi.Wikipedia(
             'en',  # Language code
-            user_agent="YourAppName/1.0 (your_email@example.com)"  # Replace with your app details
         )
+        
+        # Set the user-agent separately after initialization
+        wiki_wiki.set_user_agent("YourAppName/1.0 (your_email@example.com)")  # Replace with your app details
         
         # Fetch page from Wikipedia
         page = wiki_wiki.page(company_name)
