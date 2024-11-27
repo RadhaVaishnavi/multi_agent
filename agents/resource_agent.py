@@ -1,20 +1,30 @@
 import requests
 
 def search_datasets(use_case):
-    # Example search query for Hugging Face datasets
-    search_url = f"https://huggingface.co/datasets?search={use_case}"
-    response = requests.get(search_url)
-    
-    if response.status_code != 200:
-        return []
+    search_url_kaggle = f"https://www.kaggle.com/datasets?search={use_case}"
+    search_url_huggingface = f"https://huggingface.co/datasets?search={use_case}"
+    search_url_github = f"https://github.com/search?q={use_case}+dataset"
 
-    # Assuming the response is a list of dataset links, you would need to parse them accordingly
-    datasets = parse_datasets(response.text)
+    datasets = []
+    
+    # Search on Kaggle
+    response_kaggle = requests.get(search_url_kaggle)
+    if response_kaggle.status_code == 200:
+        datasets.append({"platform": "Kaggle", "link": search_url_kaggle})
+
+    # Search on HuggingFace
+    response_huggingface = requests.get(search_url_huggingface)
+    if response_huggingface.status_code == 200:
+        datasets.append({"platform": "HuggingFace", "link": search_url_huggingface})
+
+    # Search on GitHub
+    response_github = requests.get(search_url_github)
+    if response_github.status_code == 200:
+        datasets.append({"platform": "GitHub", "link": search_url_github})
+    
     return datasets
 
-def parse_datasets(html_response):
-    # This is a placeholder for parsing logic
-    # You should extract dataset links from the HTML content
-    # For simplicity, we can return mock data here
-    return [{"name": "Dataset 1", "link": "https://huggingface.co/datasets/dataset1"},
-            {"name": "Dataset 2", "link": "https://huggingface.co/datasets/dataset2"}]
+def save_datasets_to_file(datasets, filename="datasets.md"):
+    with open(filename, "w") as file:
+        for dataset in datasets:
+            file.write(f"**{dataset['platform']}**: [Dataset Link]({dataset['link']})\n")
