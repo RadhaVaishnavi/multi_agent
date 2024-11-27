@@ -1,20 +1,20 @@
-import openai
+class UseCaseAgent:
+    def __init__(self, company_name, industry):
+        self.company_name = company_name
+        self.industry = industry
+        self.use_cases = {
+            "healthcare": ["Disease Prediction", "Medical Image Analysis", "Patient Monitoring"],
+            "finance": ["Fraud Detection", "Risk Assessment", "Algorithmic Trading"],
+            "retail": ["Inventory Management", "Personalized Recommendations", "Customer Sentiment Analysis"]
+        }
 
-# Set up OpenAI API Key
-openai.api_key = 'your-api-key'
+    def suggest_use_cases(self):
+        # Suggest use cases based on the industry
+        return self.use_cases.get(self.industry, ["General Business Automation"])
 
-def generate_use_cases(industry):
-    prompt = f"Generate AI/ML use cases for the {industry} industry, focusing on improving processes, customer satisfaction, and operational efficiency."
-
-    try:
-        # Using the correct method for ChatGPT-based models like GPT-4
-        response = openai.ChatCompletion.create(
-            model="gpt-4",  # or use "gpt-3.5-turbo" for GPT-3.5
-            messages=[{"role": "user", "content": prompt}]
-        )
-        
-        # Extracting and returning the text from the response
-        use_cases = response['choices'][0]['message']['content']
-        return use_cases
-    except Exception as e:
-        return f"Error generating use cases: {e}"
+# Example usage:
+company_name = "Tesla"
+industry = "automotive"
+use_case_agent = UseCaseAgent(company_name, industry)
+use_cases = use_case_agent.suggest_use_cases()
+print("Suggested Use Cases:", use_cases)
