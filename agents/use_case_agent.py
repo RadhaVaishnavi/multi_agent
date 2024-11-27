@@ -1,15 +1,20 @@
 import openai
 
+# Set up OpenAI API Key
+openai.api_key = 'your-api-key'
+
 def generate_use_cases(industry):
-    openai.api_key = 'your-api-key-here'
-    prompt = f"Generate AI/ML use cases for the {industry} industry. Focus on improving operations, customer satisfaction, and boosting operational efficiency."
+    prompt = f"Generate AI/ML use cases for the {industry} industry, focusing on improving processes, customer satisfaction, and operational efficiency."
 
     try:
-        response = openai.Completion.create(
-            model="gpt-4",  # GPT-4 model for more accurate results
-            prompt=prompt,
-            max_tokens=250
+        # Using the new OpenAI chat interface for models like GPT-3.5 or GPT-4
+        response = openai.chat.Completion.create(
+            model="gpt-4",  # or use gpt-3.5-turbo for GPT-3.5
+            messages=[{"role": "user", "content": prompt}]
         )
-        return response.choices[0].text.strip()
+        
+        # Extracting and returning the text from the response
+        use_cases = response['choices'][0]['message']['content']
+        return use_cases
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error generating use cases: {e}"
