@@ -1,29 +1,24 @@
 import wikipediaapi
-import requests
-from bs4 import BeautifulSoup
 
 def get_company_info(company_name):
-    # Using Wikipedia API for company information
-    wiki_wiki = wikipediaapi.Wikipedia('en')
+    # Set up Wikipedia API with a user-agent string
+    wiki_wiki = wikipediaapi.Wikipedia(
+        'en',
+        user_agent="YourAppName/1.0 (your_email@example.com)"  # Replace with your app name and contact info
+    )
+    
     page = wiki_wiki.page(company_name)
     
     if not page.exists():
-        return "Industry and Product Info Not Found"
+        return "Industry not found", "Product info not found"
     
-    text = page.text
+    industry = "Industry info not found"  # Default value if industry isn't found
+    product_info = "Product info not found"  # Default value if product info isn't found
     
-    # Extract industry and key offerings from the text (you can refine this with regex)
-    industry = "Not found"
-    product_info = "Not found"
-    
-    if "industry" in text.lower():
-        industry_start = text.lower().find("industry")
-        industry_end = text[industry_start:].find(".")
-        industry = text[industry_start:industry_start + industry_end].strip()
-    
-    if "product" in text.lower():
-        product_start = text.lower().find("product")
-        product_end = text[product_start:].find(".")
-        product_info = text[product_start:product_start + product_end].strip()
+    # Try extracting the information
+    if 'industry' in page.text.lower():
+        industry = "Extracted industry info here"  # Add your extraction logic or scrape for industry data
+    if 'product' in page.text.lower():
+        product_info = "Extracted product info here"  # Add your extraction logic or scrape for product data
     
     return industry, product_info
