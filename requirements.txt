@@ -1,9 +1,0 @@
-streamlit
-requests
-beautifulsoup4
-openai
-pandas
-numpy
-scikit-learn
-transformers
-wikipedia-api
