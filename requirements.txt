@@ -1,0 +1,10 @@
+streamlit
+requests
+beautifulsoup4
+openai
+anthropic
+ollama
+pandas
+numpy
+scikit-learn
+transformers
